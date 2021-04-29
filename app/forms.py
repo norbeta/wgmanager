@@ -3,7 +3,7 @@ from .models import Key
 #import wgconfig
 
 class CustomKeyForm(forms.ModelForm):
-    configField = forms.CharField(widget=forms.Textarea, required=False)
+    configField = forms.CharField(widget=forms.Textarea(attrs={'rows': 30, 'cols': 80}), required=False)
 
     def save(self, commit=True):
         configField = self.cleaned_data.get('configField', None)

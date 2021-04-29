@@ -26,10 +26,11 @@ class KeyAdmin(admin.ModelAdmin):
             defaults.update(kwargs)
             formset = super().get_form(request, obj, **defaults)
             if obj.master is True:
+                group = Group.objects.get(name=obj.group)
                 config = '# Config for ' + str(obj.group) + ':' + str(obj.peer) + '\n[Interface]\n'
                 config += 'PrivateKey = '
                 config += str(obj.privatekey)
-                config += '\nAddress = ' + str(obj.ip4) + '/32, ' + str(obj.ip6) + '/128 \n'
+                config += '\nAddress = ' + str(obj.ip4) + '/' + str(group.mask4) + ', ' + str(obj.ip6) + '/' + str(group.mask6) + '\n'
                 config += 'ListenPort = 51820\n\n'
                 peers = Key.objects.filter(group=obj.group).exclude(peer=obj.peer)
                 for l in peers:
@@ -42,7 +43,7 @@ class KeyAdmin(admin.ModelAdmin):
                 try:
                     peer = Key.objects.get(group=obj.group,master=True)
                     group = Group.objects.get(name=peer.group)
-                    config += '# ' + str(obj.group) + ':Master\n[Peer]\nPublicKey = ' + str(peer.publickey) + '\nEndpoint = ' + str(peer.ip6) + '\nAllowedIPs = ' + str(group.net4) + '/' + str(group.mask4) + ', ' + str(group.net6) + '/' + str(group.mask6) + '\n'
+                    config += '# ' + str(obj.group) + ':Master\n[Peer]\nPublicKey = ' + str(peer.publickey) + '\nEndpoint = ' + str(group.endpoint) + '\nAllowedIPs = ' + str(group.net4) + '/' + str(group.mask4) + ', ' + str(group.net6) + '/' + str(group.mask6) + '\n'
                 except Key.DoesNotExist:
                     config += '# No endpoint configured. Check group settings for endpoint details\n'
                     
