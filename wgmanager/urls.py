@@ -18,7 +18,8 @@ from django.urls import path, include
 from app import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', admin.site.urls),
 ]
 
+admin.site.site_header = "wgmanager"
+admin.site.site_title = "wgmanager"
