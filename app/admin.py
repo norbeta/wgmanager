@@ -1,5 +1,7 @@
 from django.contrib import admin
 from wgconfig import wgexec as wg 
+import subprocess
+import datetime, timeago
 
 # Register your models here.
 from .models import Group, Peer, Key
@@ -9,7 +11,7 @@ admin.site.register(Group)
 admin.site.register(Peer)
 @admin.register(Key)
 class KeyAdmin(admin.ModelAdmin):
-    list_display = ("group", "peer", "master", "publickey", "ip4", "ip6", "modified")
+    list_display = ("group", "peer", "master", "publickey", "ip4", "ip6", 'latest_handshake', "modified")
     list_filter = ("group", )
     #search_fields = ("group", "peer", "ip4", "ip6",)
     form = CustomKeyForm
@@ -54,3 +56,16 @@ class KeyAdmin(admin.ModelAdmin):
     def get_changeform_initial_data(self, request):
         keys = wg.generate_keypair()
         return {'privatekey': keys[0], 'publickey': keys[1]}
+
+    @admin.display
+    def latest_handshake(self, obj):
+        try:
+            hs = subprocess.check_output('sudo wg show wg0 latest-handshakes|grep ' + str(obj.publickey) + '|cut -f2', shell=True).decode('ascii')
+            now = datetime.datetime.now()
+            ts = datetime.datetime.fromtimestamp(int(hs))
+            timesince = timeago.format(ts, now)
+            print(timesince)
+            return '%s' % timesince
+        except:
+            return ''
+
