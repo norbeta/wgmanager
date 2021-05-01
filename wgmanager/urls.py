@@ -23,3 +23,4 @@ urlpatterns = [
 
 admin.site.site_header = "wgmanager"
 admin.site.site_title = "wgmanager"
+admin.site.site_url = None
