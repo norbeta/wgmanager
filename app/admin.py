@@ -64,8 +64,13 @@ class KeyAdmin(admin.ModelAdmin):
             now = datetime.datetime.now()
             ts = datetime.datetime.fromtimestamp(int(hs))
             timesince = timeago.format(ts, now)
-            print(timesince)
-            return '%s' % timesince
+            if int(hs) == 0:
+                return 'None received'
+            else:
+                return '%s' % timesince
         except:
-            return ''
+            if obj.master is True:
+                return 'Peer is master'
+            else:
+                return 'Peer does not exist'
 
