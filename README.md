@@ -2,19 +2,28 @@
 Django driven "keylocker" for wireguard. Add peers to groups, generate keys and configs. 
 Uses the django-admin interface directly. 
 
+> This app is not intended to be accessible from the outside world as it executes elevated commands and contains private keys. 
+
 ### Requirements
 * Python 3
 * Wireguard
-* wgconfig (pip3 install wgconfig)
+* wgconfig
+* iptools (for the future)
+* timeago
 
 ### Installation
 * Clone the repo to where you would like your installation
-* Create a venv
-* Run pip install -r requirements.txt to install depencies 
+* Create a venv `python -m virtualenv venv`
+* Run `pip install -r requirements.txt` to install depencies 
+* Run `manage.py migrate` to create the database
+* Run `manage.py createsuperuser`
 * Get it up and running with your choice of WSGI handler
 * Turn off debug-mode in settings.py
 * Fill in a new secret-key in settings.py
 * Update allowed hosts in settings.py
+* Create a line in sudoers that enables the app to run the wg command with `NOPASSWD:`
+	> * You are doing this on your own responsibility. This app should NEVER be exposed to the internet. 
+	> * This was the only way I could think of to be able to access the wg stats. Other suggestions would be highly appreciated. 
 
 ### How it works
 * Add a group
@@ -34,3 +43,4 @@ Uses the django-admin interface directly.
 ### Wishlist
 * Auto update wireguard config
 * Status of the peers (host up/down, latest handshake)
+* Dynamic update of the peer-list when adding keys so you don't accidentially add new keys to an existing peer in the group. 
