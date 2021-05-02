@@ -57,4 +57,20 @@ class Key(models.Model):
         name = str(self.group) + ':' + str(self.peer)
         return name
 
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields = ['peer', 'group'], 
+                    name = 'unique_peer_per_group'
+                ),
+                models.UniqueConstraint(
+                    fields = ['group', 'ip4'], 
+                    name = 'unique_ip4_per_group'
+                ), 
+                models.UniqueConstraint(
+                    fields = ['group', 'ip6'], 
+                    name = 'unique_ip6_per_group'
+                )
+            ]
+
 
