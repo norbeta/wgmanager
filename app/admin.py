@@ -11,8 +11,9 @@ admin.site.register(Group)
 admin.site.register(Peer)
 @admin.register(Key)
 class KeyAdmin(admin.ModelAdmin):
-    list_display = ("group", "peer", "master", "publickey", "ip4", "ip6", 'latest_handshake', "modified")
+    list_display = ("peer", "group", "publickey", "master", "ip4", "ip6", 'latest_handshake', "modified")
     list_filter = ("group", )
+    ordering = ("-master", "peer__name", "group__name")
     #search_fields = ("group", "peer", "ip4", "ip6",)
     form = CustomKeyForm
     add_form = CreateKeyForm
